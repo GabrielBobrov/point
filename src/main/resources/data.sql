@@ -1,0 +1,1 @@
+INSERT INTO PONTO( point,status, user_id) VALUES('2021-10-01 15:10:10',0,11);
