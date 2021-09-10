@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.gabrielbobrov.point.model.PointEntity;
-import br.com.gabrielbobrov.point.repository.PointRepository;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

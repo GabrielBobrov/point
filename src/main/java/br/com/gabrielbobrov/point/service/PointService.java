@@ -42,7 +42,7 @@ public class PointService {
 					}
 				}
 				if (dto.getPoint().isBefore(entityList.get(0).getPoint())) {
-					return ResponseEntity.status(409).body(new SuccessMessageDto("Data informata é antes do ultimo ponto registrado"));
+					return ResponseEntity.status(409).body(new SuccessMessageDto("Data informata é anterior ao ultimo ponto registrado"));
 				}
 				// check witch status the last point is.
 				if (entityList.get(0).getStatus() == Status.BeginWork) {
