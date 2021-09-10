@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.gabrielbobrov.point.dto.SuccessMessageDto;
 import br.com.gabrielbobrov.point.model.PointEntity;
 import br.com.gabrielbobrov.point.model.PointEntity.Status;
 import br.com.gabrielbobrov.point.repository.PointRepository;
-import br.comgabrielbobrov.point.dto.SuccessMessageDto;
 
 @org.springframework.stereotype.Service
 public class PointService {

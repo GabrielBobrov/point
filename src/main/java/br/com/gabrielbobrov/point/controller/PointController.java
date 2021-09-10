@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.gabrielbobrov.point.dto.SuccessMessageDto;
 import br.com.gabrielbobrov.point.model.PointEntity;
 import br.com.gabrielbobrov.point.service.PointService;
-import br.comgabrielbobrov.point.dto.SuccessMessageDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

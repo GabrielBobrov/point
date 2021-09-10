@@ -1,4 +1,4 @@
-package br.comgabrielbobrov.point.dto;
+package br.com.gabrielbobrov.point.dto;
 
 import java.time.LocalDateTime;
 
