@@ -1,14 +1,13 @@
 package br.com.gabrielbobrov.point.model;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -19,22 +18,20 @@ public class PointEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@NotNull(message = "Campo obrigatório não informado")
-	private LocalDateTime point;
+	@NotEmpty(message = "Campo obrigatório não informado")
+	private String dataHora;
 	
 	private Status status;
-	
-	@NotNull(message = "Campo obrigatório não informado")
-	private Long userId;
+
 
 	public enum Status {
 		BeginWork, BeginLunch, EndLunch, EndWork
 	}
 
-	public LocalDateTime getPoint() {
-		return point;
+	public String getDataHora() {
+		return dataHora;
 	}
 	
 	public boolean validateDate(String date){
@@ -52,26 +49,15 @@ public class PointEntity {
 	public PointEntity(PointEntity pointEntity) {
 		super();
 		this.id = pointEntity.getId();
-		this.point = pointEntity.getPoint();
+		this.dataHora = pointEntity.getDataHora();
 		this.status = pointEntity.getStatus();
-		this.userId = pointEntity.getUserId();
 	}
 
 	public PointEntity() {
 	}
 
-
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public void setPoint(LocalDateTime point) {
-		this.point = point;
+	public void setDataHora(String dataHora) {
+		this.dataHora = dataHora;
 	}
 
 	public Status getStatus() {

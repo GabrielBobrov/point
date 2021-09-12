@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.gabrielbobrov.point.dto.SuccessMessageDto;
+import br.com.gabrielbobrov.point.dto.MessageDto;
 import br.com.gabrielbobrov.point.model.PointEntity;
 import br.com.gabrielbobrov.point.service.PointService;
 import io.swagger.annotations.Api;
@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @Api(tags = "Bater ponto")
-@RequestMapping(value = "/ponto",produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/batidas",produces = MediaType.APPLICATION_JSON_VALUE)
 public class PointController {
 	
 
@@ -31,8 +31,8 @@ public class PointController {
 	
 	@PostMapping
 	@Transactional
-	@ApiOperation(value = "Bata seu ponto", notes = "Serviço para bater ponto")
-	public ResponseEntity<SuccessMessageDto> beatTime( @ApiParam(value = "Hora da batida", required = true) 
+	@ApiOperation(value = "Registrar um horário da jornada diária de trabalho", notes = "Serviço para bater ponto")
+	public ResponseEntity<MessageDto> beatTime( @ApiParam(value = "Hora da batida", required = true) 
 	@Valid @RequestBody PointEntity dto, UriComponentsBuilder uriBuilder) {
 		return service.savePoint(dto, uriBuilder);
 		

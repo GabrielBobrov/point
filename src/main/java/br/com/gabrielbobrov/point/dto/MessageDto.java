@@ -1,16 +1,16 @@
 package br.com.gabrielbobrov.point.dto;
 
-public class SuccessMessageDto {
+public class MessageDto {
 	
 	private String message;
 	
 	
 	
-	public SuccessMessageDto(String message) {
+	public MessageDto(String message) {
 		super();
 		this.message = message;
 	}
-	public SuccessMessageDto() {
+	public MessageDto() {
 	}
 
 	public String getMessage() {

@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.gabrielbobrov.point.dto.SuccessMessageDto;
+import br.com.gabrielbobrov.point.dto.MessageDto;
 import br.com.gabrielbobrov.point.model.PointEntity;
 import br.com.gabrielbobrov.point.model.PointEntity.Status;
 import br.com.gabrielbobrov.point.repository.PointRepository;
+import br.com.gabrielbobrov.point.utils.DateTimeUtils;
 
 @org.springframework.stereotype.Service
 public class PointService {
@@ -20,85 +21,76 @@ public class PointService {
 	@Autowired
 	private PointRepository pointRepository;
 
-	public ResponseEntity<SuccessMessageDto> savePoint(PointEntity dto, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<MessageDto> savePoint(PointEntity dto, UriComponentsBuilder uriBuilder) {
 
 		PointEntity point = new PointEntity();
-		LocalDateTime initialDate = dto.getPoint();
-		List<PointEntity> entityList = pointRepository.findByDateInterval(dto.getUserId(),initialDate.toLocalDate().atStartOfDay(), initialDate.toLocalDate().atTime(23, 59, 59));
-		URI uri = uriBuilder.path("/batidas/{id}").buildAndExpand(dto.getPoint()).toUri();
-		if (isWeekDay(dto.getPoint())) {
+		DateTimeUtils dateUtils = new DateTimeUtils();
+		LocalDateTime date = dateUtils.convertStringIntoLocalDateTime(dto.getDataHora());
+		URI uri = uriBuilder.path("/batidas/{id}").buildAndExpand(dto.getDataHora()).toUri();
 
+		if (!dateUtils.isValidDate(dto.getDataHora())) {
+			return ResponseEntity.status(400).body(new MessageDto("Data possui formato inválido"));
+		}
+		
+		//verifica se o dia recebido é no final de semana
+		if (dateUtils.isWeekDay(date)) {
+			List<PointEntity> entityList = pointRepository.findByDateInterval(
+					date.toLocalDate().atStartOfDay().toString(), date.toLocalDate().atTime(23, 59, 59).toString());
+
+			// verifica se não existe ponto batido naquele dia
 			if (entityList.isEmpty()) {
-				point.setPoint(dto.getPoint());
+				point.setDataHora(dto.getDataHora());
 				point.setStatus(Status.BeginWork);
-				point.setUserId(dto.getUserId());
 				pointRepository.save(point);
 				return ResponseEntity.created(uri).build();
 
 			} else {
+				
+				// verificando se existe horario registrado
 				for (PointEntity pointEntity : entityList) {
-					if (dto.getPoint().equals(pointEntity.getPoint())) {
-						return ResponseEntity.status(409).body(new SuccessMessageDto("Horário já registrado"));
+					if (dto.getDataHora().equals(pointEntity.getDataHora())) {
+						return ResponseEntity.status(409).body(new MessageDto("Horário já registrado"));
 					}
 				}
-				if (dto.getPoint().isBefore(entityList.get(0).getPoint())) {
-					return ResponseEntity.status(409).body(new SuccessMessageDto("Data informata é anterior ao ultimo ponto registrado"));
+				
+				if (date.isBefore(LocalDateTime.parse(entityList.get(0).getDataHora()))) {
+					return ResponseEntity.status(409).body(new MessageDto("Data informata é anterior ao ultimo ponto registrado"));
 				}
-				// check witch status the last point is.
+				
+				// checando qual status foi o ultimo ponto batido
 				if (entityList.get(0).getStatus() == Status.BeginWork) {
-					point.setPoint(dto.getPoint());
+					point.setDataHora(dto.getDataHora());
 					point.setStatus(Status.BeginLunch);
-					point.setUserId(dto.getUserId());
 					pointRepository.save(point);
 					return ResponseEntity.created(uri).build();
 				}
 
 				if (entityList.get(0).getStatus() == Status.BeginLunch) {
-					long diferenceInHours = Duration.between(entityList.get(0).getPoint(), initialDate).toHours();
+					long diferenceInHours = Duration.between(LocalDateTime.parse(entityList.get(0).getDataHora()), date).toHours();
+					
 					if (diferenceInHours >= 1l) {
-						point.setPoint(dto.getPoint());
+						point.setDataHora(dto.getDataHora());
 						point.setStatus(Status.EndLunch);
-						point.setUserId(dto.getUserId());
 						pointRepository.save(point);
 						return ResponseEntity.created(uri).build();
 					} else {
-						return ResponseEntity.status(403).body(new SuccessMessageDto("Deve haver no mínimo 1 hora de almoço"));
+						return ResponseEntity.status(403).body(new MessageDto("Deve haver no mínimo 1 hora de almoço"));
 					}
 				}
+				
 				if (entityList.get(0).getStatus() == Status.EndLunch) {
-					point.setPoint(dto.getPoint());
+					point.setDataHora(dto.getDataHora());
 					point.setStatus(Status.EndWork);
-					point.setUserId(dto.getUserId());
 					pointRepository.save(point);
 					return ResponseEntity.created(uri).build();
 				}
 
 				if (entityList.get(0).getStatus() == Status.EndWork) {
-					return ResponseEntity.status(403).body(new SuccessMessageDto("Apenas 4 horários podem ser registrados por dia"));
+					return ResponseEntity.status(403).body(new MessageDto("Apenas 4 horários podem ser registrados por dia"));
 				}
 			}
-		} else {
-			return ResponseEntity.status(403)
-					.body(new SuccessMessageDto("Sábado e domingo não são permitidos como dia de trabalho"));
-
 		}
-		return ResponseEntity.created(uri).build();
-
-	}
-
-	public boolean isWeekDay(LocalDateTime dt) {
-
-		switch (dt.getDayOfWeek()) {
-
-		case SATURDAY:
-			return false;
-
-		case SUNDAY:
-			return false;
-
-		default:
-			return true;
-		}
+		return ResponseEntity.status(403).body(new MessageDto("Sábado e domingo não são permitidos como dia de trabalho"));
 
 	}
 
