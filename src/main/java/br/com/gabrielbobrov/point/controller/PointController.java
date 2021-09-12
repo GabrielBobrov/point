@@ -21,22 +21,20 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @Api(tags = "Bater ponto")
-@RequestMapping(value = "/batidas",produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/batidas", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PointController {
-	
 
 	@Autowired
 	private PointService service;
-	
-	
+
 	@PostMapping
 	@Transactional
 	@ApiOperation(value = "Registrar um horário da jornada diária de trabalho", notes = "Serviço para bater ponto")
-	public ResponseEntity<MessageDto> beatTime( @ApiParam(value = "Hora da batida", required = true) 
-	@Valid @RequestBody PointEntity dto, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<MessageDto> beatTime(
+			@ApiParam(value = "Hora da batida", required = true) @Valid @RequestBody PointEntity dto,
+			UriComponentsBuilder uriBuilder) {
 		return service.savePoint(dto, uriBuilder);
-		
+
 	}
-	
 
 }

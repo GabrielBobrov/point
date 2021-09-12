@@ -18,13 +18,12 @@ public class PointEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@NotEmpty(message = "Campo obrigatório não informado")
 	private String dataHora;
-	
-	private Status status;
 
+	private Status status;
 
 	public enum Status {
 		BeginWork, BeginLunch, EndLunch, EndWork
@@ -33,8 +32,8 @@ public class PointEntity {
 	public String getDataHora() {
 		return dataHora;
 	}
-	
-	public boolean validateDate(String date){
+
+	public boolean validateDate(String date) {
 		SimpleDateFormat format = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
 		format.setLenient(false);
 		try {
@@ -42,7 +41,7 @@ public class PointEntity {
 			return true;
 		} catch (Exception e) {
 			return false;
-			
+
 		}
 	}
 
