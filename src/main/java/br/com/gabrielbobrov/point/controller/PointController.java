@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.gabrielbobrov.point.dto.MessageDto;
-import br.com.gabrielbobrov.point.model.PointEntity;
+import br.com.gabrielbobrov.point.dto.PointDto;
 import br.com.gabrielbobrov.point.service.PointService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,7 +31,7 @@ public class PointController {
 	@Transactional
 	@ApiOperation(value = "Registrar um horário da jornada diária de trabalho", notes = "Serviço para bater ponto")
 	public ResponseEntity<MessageDto> beatTime(
-			@ApiParam(value = "Hora da batida", required = true) @Valid @RequestBody PointEntity dto,
+			@ApiParam(value = "Hora da batida",example = "2021-09-10T08:00:00", required = true) @Valid @RequestBody PointDto dto,
 			UriComponentsBuilder uriBuilder) {
 		return service.savePoint(dto, uriBuilder);
 

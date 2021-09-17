@@ -22,7 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.gabrielbobrov.point.PointApplication;
 import br.com.gabrielbobrov.point.dto.MessageDto;
-import br.com.gabrielbobrov.point.model.PointEntity;
+import br.com.gabrielbobrov.point.dto.PointDto;
 import br.com.gabrielbobrov.point.repository.PointRepository;
 import br.com.gabrielbobrov.point.service.PointService;
 
@@ -44,7 +44,7 @@ public class PointControllerTest {
 	public void pointBadRequestWrongFormatTest() throws Exception {
 		service = mock(PointService.class);
 		String json = "{\"dataHora\":\"2022--11-30T02:57:01\"}";
-		PointEntity entity = new PointEntity();
+		PointDto entity = new PointDto();
 		entity.setDataHora("2022--11-30T02:57:01");
 		URI uri = new URI("/batidas");
 		when(service.savePoint(entity, UriComponentsBuilder.newInstance())).thenReturn(ResponseEntity.status(400).body(new MessageDto("Data possui formato inválido")));
@@ -61,7 +61,7 @@ public class PointControllerTest {
 	public void pointBadRequestEmptyPointTest() throws Exception {
 		service = mock(PointService.class);
 		String json = "{}";
-		PointEntity entity = new PointEntity();
+		PointDto entity = new PointDto();
 		entity.setDataHora("");
 		URI uri = new URI("/batidas");
 		when(service.savePoint(entity, UriComponentsBuilder.newInstance())).thenReturn(ResponseEntity.status(400).body(new MessageDto("Data possui formato inválido")));
@@ -76,7 +76,7 @@ public class PointControllerTest {
 	@Test
 	public void pointCreatedTest() throws Exception {
 		String json = "{\"dataHora\":\"2022-11-30T02:57:01\"}";
-		PointEntity entity = new PointEntity();
+		PointDto entity = new PointDto();
 		entity.setDataHora("2022-11-30T02:57:01");
 		URI uri = new URI("/batidas");
 		when(service.savePoint(entity, UriComponentsBuilder.newInstance())).thenReturn(ResponseEntity.created(uri).build());
@@ -91,7 +91,7 @@ public class PointControllerTest {
 	@Test
 	public void pointDuplicateDateTest() throws Exception {
 		String json = "{\"dataHora\":\"2021-10-01T15:10:10\"}";
-		PointEntity entity = new PointEntity();
+		PointDto entity = new PointDto();
 		entity.setDataHora("2022-11-30T02:57:01");
 		URI uri = new URI("/batidas");
 		when(service.savePoint(entity, UriComponentsBuilder.newInstance())).thenReturn(ResponseEntity.status(409).body(new MessageDto("Horário já registrado")));
@@ -106,7 +106,7 @@ public class PointControllerTest {
 	@Test
 	public void pointTimeLunchTest() throws Exception {
 		String json = "{\"dataHora\":\"2021-10-01T16:30:10\"}";//20 min de almoço de acordo com a data do banco de dados
-		PointEntity entity = new PointEntity();
+		PointDto entity = new PointDto();
 		entity.setDataHora("2021-10-01T16:30:10");
 		URI uri = new URI("/batidas");
 		when(service.savePoint(entity, UriComponentsBuilder.newInstance())).thenReturn(ResponseEntity.status(403).body(new MessageDto("Deve haver no mínimo 1 hora de almoço")));
@@ -122,7 +122,7 @@ public class PointControllerTest {
 	public void pointWeekendTest() throws Exception {
 		service = mock(PointService.class);
 		String json = "{\"dataHora\":\"2021-10-02T16:30:10\"}";
-		PointEntity entity = new PointEntity();
+		PointDto entity = new PointDto();
 		entity.setDataHora("2021-10-02T16:30:10");
 		URI uri = new URI("/batidas");
 		when(service.savePoint(entity, UriComponentsBuilder.newInstance())).thenReturn(ResponseEntity.status(403).body(new MessageDto("Deve haver no mínimo 1 hora de almoço")));

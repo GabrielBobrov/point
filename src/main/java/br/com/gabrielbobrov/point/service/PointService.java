@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.gabrielbobrov.point.dto.MessageDto;
+import br.com.gabrielbobrov.point.dto.PointDto;
 import br.com.gabrielbobrov.point.model.PointEntity;
 import br.com.gabrielbobrov.point.model.PointEntity.Status;
 import br.com.gabrielbobrov.point.repository.PointRepository;
@@ -21,7 +22,7 @@ public class PointService {
 	@Autowired
 	private PointRepository pointRepository;
 
-	public ResponseEntity<MessageDto> savePoint(PointEntity dto, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<MessageDto> savePoint(PointDto dto, UriComponentsBuilder uriBuilder) {
 
 		PointEntity point = new PointEntity();
 		DateTimeUtils dateUtils = new DateTimeUtils();
